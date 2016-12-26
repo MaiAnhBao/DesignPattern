@@ -17,22 +17,16 @@ public:
 
 	void eng();
 	void fr();
-	void es();
 };
 
 class State {
 public:
 	virtual void eng(HelloWorldMachine *m) {
-		std::cout << "Hello World\n";
+		std::cout << "Bonjour tout le monde\n";//"Hello World\n";
 	}
 
 	virtual void fr(HelloWorldMachine *m) {
-		std::cout << "Bonjour tout le monde\n";
-	}
-
-
-	virtual void es(HelloWorldMachine *m) {
-		std::cout << "Hola el mundo \n";
+		std::cout << "Hello World\n" ;//"Bonjour tout le monde\n";
 	}
 
 	virtual ~State() = default;
@@ -46,9 +40,6 @@ void HelloWorldMachine::fr() {
 	current->fr(this);
 }
 
-void HelloWorldMachine::es() {
-	current->es(this);
-}
 
 class HelloWorldEng: public State {
 public:
@@ -60,7 +51,7 @@ public:
 		std::cout << "Destructor Hello World Eng\n";
 	}
 
-	void change(HelloWorldMachine *m);
+	void eng(HelloWorldMachine *m);
 };
 
 class HelloWorldFr: public State {
@@ -73,34 +64,15 @@ public:
 		std::cout << "Destructor Hello World Fr\n";
 	}
 
-	void change(HelloWorldMachine *m);
-};
-
-class HelloWorldEs: public State {
-public:
-	HelloWorldEs() {
-		std::cout << "Constructor Hello World Es\n";
-	}
-
-	~HelloWorldEs() {
-		std::cout << "Destructor Hello World Es\n";
-	}
-
-	void change(HelloWorldMachine *m) {
-		std::cout << "Change from FR to ENG";
+	void fr(HelloWorldMachine *m) {
+		std::cout << "Change from FR to ENG\n";
 		m->setCurrentState(new HelloWorldEng());
 		delete this;
 	}
 };
 
-void HelloWorldFr::change(HelloWorldMachine *m) {
-	std::cout << "Change from FR to ES";
-	m->setCurrentState(new HelloWorldEs());
-	delete this;
-}
-
-void HelloWorldEng::change(HelloWorldMachine *m) {
-	std::cout << "Change from ENG to FR";
+void HelloWorldEng::eng(HelloWorldMachine *m) {
+	std::cout << "Change from ENG to FR\n";
 	m->setCurrentState(new HelloWorldFr());
 	delete this;
 }
@@ -112,12 +84,12 @@ HelloWorldMachine::HelloWorldMachine() {
 
 int main(int argc, char **argv) {
 	void(HelloWorldMachine:: *ptrs[])() = {
-		&HelloWorldMachine::eng, &HelloWorldMachine::fr, &HelloWorldMachine::es
+		&HelloWorldMachine::eng, &HelloWorldMachine::fr
 	};
 	HelloWorldMachine fsm;
 	int num;
 	while (1) {
-		std::cout << "Enter 0/1/2: ";
+		std::cout << "Enter 0/1: ";
 		std::cin >> num;
 		(fsm.*ptrs[num])();
 	}
